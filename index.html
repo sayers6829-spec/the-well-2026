@@ -1,79 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>THE WELL</title>
+    <title>THE WELL | 4-4-6</title>
     <style>
-        /* This is the "Paint" - kept inside the house */
         body { 
-            background-color: #0f172a; 
-            color: #14b8a6; 
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+            background-color: #0f172a; color: #14b8a6; font-family: sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden;
         }
         .circle {
-            width: 200px;
-            height: 200px;
-            border: 4px solid #14b8a6;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            transition: all 0.5s ease;
+            width: 220px; height: 220px; border: 4px solid #14b8a6; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: all 1s ease-in-out;
         }
+        .label { font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.7; }
+        .timer { font-size: 3.5rem; font-weight: bold; }
         .btn {
-            background-color: #14b8a6;
-            color: #0f172a;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            letter-spacing: 1px;
+            margin-top: 40px; background-color: #14b8a6; color: #0f172a;
+            border: none; padding: 15px 40px; border-radius: 30px;
+            font-weight: bold; cursor: pointer; letter-spacing: 2px;
         }
-        .breathing {
-            animation: pulse 4s infinite ease-in-out;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
+        /* Breathing Animations */
+        .inhale { transform: scale(1.2); box-shadow: 0 0 30px #14b8a6; }
+        .hold { transform: scale(1.2); opacity: 1; }
+        .exhale { transform: scale(1); opacity: 0.5; }
     </style>
 </head>
 <body>
-
-    <h1 style="letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px;">The Well</h1>
-
-    <div id="mainCircle" class="circle">45</div>
-
-    <button id="startBtn" class="btn" onclick="startAnchor()">BEGIN ANCHOR</button>
+    <div id="status" class="label">READY</div>
+    <div id="mainCircle" class="circle">
+        <div id="phaseText" style="font-size: 1rem; letter-spacing: 1px;">FOCUS</div>
+        <div id="timer" class="timer">--</div>
+    </div>
+    <button id="startBtn" class="btn" onclick="startProtocol()">BEGIN 4-4-6</button>
 
     <script>
-        function startAnchor() {
-            let time = 45;
-            const display = document.getElementById('mainCircle');
-            const btn = document.getElementById('startBtn');
-            
-            btn.style.visibility = 'hidden';
-            display.classList.add('breathing');
+        const circle = document.getElementById('mainCircle');
+        const timerDisp = document.getElementById('timer');
+        const phaseDisp = document.getElementById('phaseText');
+        const statusDisp = document.getElementById('status');
+        const btn = document.getElementById('startBtn');
 
-            const timer = setInterval(() => {
-                time--;
-                display.innerText = time;
-                if (time <= 0) {
-                    clearInterval(timer);
-                    display.classList.remove('breathing');
-                    display.innerText = "REST";
-                    btn.style.visibility = 'visible';
-                    btn.innerText = "RESTART";
-                }
-            }, 1000);
+        async function startProtocol() {
+            btn.style.display = 'none';
+            statusDisp.innerText = "Settle your posture...";
+            
+            // 3-second countdown to settle
+            for(let i=3; i>0; i--) {
+                timerDisp.innerText = i;
+                await new Promise(r => setTimeout(r, 1000));
+            }
+
+            // The 4-4-6 Cycle (One round for now)
+            await breathePhase("INHALE", 4, "inhale");
+            await breathePhase("HOLD", 4, "hold");
+            await breathePhase("EXHALE", 6, "exhale");
+
+            timerDisp.innerText = "DONE";
+            phaseDisp.innerText = "REST";
+            statusDisp.innerText = "The Slight Edge is found in the stillness.";
+            btn.style.display = 'block';
+            btn.innerText = "ANOTHER ROUND";
+        }
+
+        async function breathePhase(name, seconds, cssClass) {
+            phaseDisp.innerText = name;
+            circle.className = "circle " + cssClass;
+            for(let i = seconds; i > 0; i--) {
+                timerDisp.innerText = i;
+                await new Promise(r => setTimeout(r, 1000));
+            }
         }
     </script>
 </body>
