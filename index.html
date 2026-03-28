@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>THE WELL | 4-4-6</title>
+    <title>THE WELL | 4-4-6 | ACOUSTIC</title>
     <style>
         body { 
             background-color: #0f172a; color: #14b8a6; font-family: sans-serif;
@@ -20,19 +20,19 @@
             border: none; padding: 15px 40px; border-radius: 30px;
             font-weight: bold; cursor: pointer; letter-spacing: 2px;
         }
-        /* Breathing Animations */
-        .inhale { transform: scale(1.2); box-shadow: 0 0 30px #14b8a6; }
+        .inhale { transform: scale(1.2); box-shadow: 0 0 40px #14b8a6; }
         .hold { transform: scale(1.2); opacity: 1; }
         .exhale { transform: scale(1); opacity: 0.5; }
     </style>
 </head>
 <body>
+    <audio id="bell" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>
     <div id="status" class="label">READY</div>
     <div id="mainCircle" class="circle">
         <div id="phaseText" style="font-size: 1rem; letter-spacing: 1px;">FOCUS</div>
         <div id="timer" class="timer">--</div>
     </div>
-    <button id="startBtn" class="btn" onclick="startProtocol()">BEGIN 4-4-6</button>
+    <button id="startBtn" class="btn" onclick="startProtocol()">BEGIN ANCHOR</button>
 
     <script>
         const circle = document.getElementById('mainCircle');
@@ -40,25 +40,30 @@
         const phaseDisp = document.getElementById('phaseText');
         const statusDisp = document.getElementById('status');
         const btn = document.getElementById('startBtn');
+        const bell = new Audio('https://cdn.pixabay.com/audio/2022/03/24/audio_730604c55a.mp3'); // Deep Singing Bowl
 
         async function startProtocol() {
             btn.style.display = 'none';
-            statusDisp.innerText = "Settle your posture...";
+            statusDisp.innerText = "Close your eyes and listen...";
             
-            // 3-second countdown to settle
+            // Initial Bell
+            bell.play();
+
             for(let i=3; i>0; i--) {
                 timerDisp.innerText = i;
                 await new Promise(r => setTimeout(r, 1000));
             }
 
-            // The 4-4-6 Cycle (One round for now)
             await breathePhase("INHALE", 4, "inhale");
             await breathePhase("HOLD", 4, "hold");
             await breathePhase("EXHALE", 6, "exhale");
 
+            // Closing Bell
+            bell.play();
+
             timerDisp.innerText = "DONE";
             phaseDisp.innerText = "REST";
-            statusDisp.innerText = "The Slight Edge is found in the stillness.";
+            statusDisp.innerText = "Peace in the Afternoon of Life.";
             btn.style.display = 'block';
             btn.innerText = "ANOTHER ROUND";
         }
