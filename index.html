@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>THE WELL | 4-4-6 | VOX</title>
+    <title>THE WELL | 4-4-6 | MASTER</title>
     <style>
         body { 
             background-color: #0f172a; color: #14b8a6; font-family: sans-serif;
@@ -16,52 +16,52 @@
         .label { font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.7; }
         .timer { font-size: 3.5rem; font-weight: bold; }
         .btn {
-            margin-top: 40px; background-color: #14b8a6; color: #0f172a;
-            border: none; padding: 15px 40px; border-radius: 30px;
+            margin-top: 20px; background-color: #14b8a6; color: #0f172a;
+            border: none; padding: 12px 30px; border-radius: 30px;
             font-weight: bold; cursor: pointer; letter-spacing: 2px;
         }
-        .inhale { transform: scale(1.2); box-shadow: 0 0 50px #14b8a6; }
-        .hold { transform: scale(1.2); opacity: 1; }
-        .exhale { transform: scale(1); opacity: 0.5; }
+        .inhale { transform: scale(1.25); box-shadow: 0 0 60px #14b8a6; }
+        .hold { transform: scale(1.25); opacity: 1; }
+        .exhale { transform: scale(1); opacity: 0.4; }
     </style>
 </head>
 <body>
 
-    <div id="status" class="label">READY</div>
+    <div id="status" class="label">RESTORE THE SILENCE</div>
+    
     <div id="mainCircle" class="circle">
-        <div id="phaseText" style="font-size: 1rem; letter-spacing: 1px;">FOCUS</div>
+        <div id="phaseText" style="font-size: 1rem; letter-spacing: 1px;">THE WELL</div>
         <div id="timer" class="timer">--</div>
     </div>
-    <button id="startBtn" class="btn" onclick="initAndStart()">BEGIN ANCHOR</button>
+
+    <button id="startBtn" class="btn" onclick="runAnchor()">BEGIN ANCHOR</button>
+    <p id="audioNotice" style="font-size: 10px; margin-top: 15px; opacity: 0.5;">Ensure device is not on Silent/Vibrate</p>
 
     <script>
-        // Use a reliable, public singing bowl sound
+        // Directly linking a very reliable public singing bowl sound
         const bell = new Audio('https://cdn.pixabay.com/audio/2022/03/24/audio_730604c55a.mp3');
-        
-        const circle = document.getElementById('mainCircle');
-        const timerDisp = document.getElementById('timer');
-        const phaseDisp = document.getElementById('phaseText');
-        const statusDisp = document.getElementById('status');
-        const btn = document.getElementById('startBtn');
+        bell.load(); // Force the browser to start downloading immediately
 
-        // This function "Unlocks" the audio for the browser
-        function initAndStart() {
-            bell.play().then(() => {
-                // If it plays, we pause it immediately and start the logic
+        async function runAnchor() {
+            const circle = document.getElementById('mainCircle');
+            const timerDisp = document.getElementById('timer');
+            const phaseDisp = document.getElementById('phaseText');
+            const statusDisp = document.getElementById('status');
+            const btn = document.getElementById('startBtn');
+
+            // 1. THE HANDSHAKE: Play and immediately pause to "unlock" audio
+            try {
+                await bell.play();
                 bell.pause();
                 bell.currentTime = 0;
-                startProtocol();
-            }).catch(error => {
-                console.log("Audio unlock failed:", error);
-                startProtocol(); // Still start the visual even if audio fails
-            });
-        }
+            } catch (e) {
+                console.log("Audio requires user gesture");
+            }
 
-        async function startProtocol() {
-            btn.style.display = 'none';
-            statusDisp.innerText = "Listening...";
+            btn.style.visibility = 'hidden';
+            statusDisp.innerText = "CENTERING...";
             
-            // Initial Chime
+            // Initial Bell
             bell.play();
 
             // 3-second settle
@@ -71,21 +71,21 @@
             }
 
             // 4-4-6 Cycle
-            await breathePhase("INHALE", 4, "inhale");
-            await breathePhase("HOLD", 4, "hold");
-            await breathePhase("EXHALE", 6, "exhale");
+            await breathePhase(circle, phaseDisp, timerDisp, "INHALE", 4, "inhale");
+            await breathePhase(circle, phaseDisp, timerDisp, "HOLD", 4, "hold");
+            await breathePhase(circle, phaseDisp, timerDisp, "EXHALE", 6, "exhale");
 
-            // Final Chime
+            // Final Bell
             bell.play();
 
-            timerDisp.innerText = "DONE";
-            phaseDisp.innerText = "REST";
-            statusDisp.innerText = "The Slight Edge is found in the stillness.";
-            btn.style.display = 'block';
-            btn.innerText = "ANOTHER ROUND";
+            timerDisp.innerText = "REST";
+            phaseDisp.innerText = "DONE";
+            statusDisp.innerText = "THE SLIGHT EDGE REMAINS.";
+            btn.style.visibility = 'visible';
+            btn.innerText = "AGAIN";
         }
 
-        async function breathePhase(name, seconds, cssClass) {
+        async function breathePhase(circle, phaseDisp, timerDisp, name, seconds, cssClass) {
             phaseDisp.innerText = name;
             circle.className = "circle " + cssClass;
             for(let i = seconds; i > 0; i--) {
