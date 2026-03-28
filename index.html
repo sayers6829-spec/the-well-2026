@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>THE WELL | 4-4-6 | ACOUSTIC</title>
+    <title>THE WELL | 4-4-6 | VOX</title>
     <style>
         body { 
             background-color: #0f172a; color: #14b8a6; font-family: sans-serif;
@@ -20,50 +20,67 @@
             border: none; padding: 15px 40px; border-radius: 30px;
             font-weight: bold; cursor: pointer; letter-spacing: 2px;
         }
-        .inhale { transform: scale(1.2); box-shadow: 0 0 40px #14b8a6; }
+        .inhale { transform: scale(1.2); box-shadow: 0 0 50px #14b8a6; }
         .hold { transform: scale(1.2); opacity: 1; }
         .exhale { transform: scale(1); opacity: 0.5; }
     </style>
 </head>
 <body>
-    <audio id="bell" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>
+
     <div id="status" class="label">READY</div>
     <div id="mainCircle" class="circle">
         <div id="phaseText" style="font-size: 1rem; letter-spacing: 1px;">FOCUS</div>
         <div id="timer" class="timer">--</div>
     </div>
-    <button id="startBtn" class="btn" onclick="startProtocol()">BEGIN ANCHOR</button>
+    <button id="startBtn" class="btn" onclick="initAndStart()">BEGIN ANCHOR</button>
 
     <script>
+        // Use a reliable, public singing bowl sound
+        const bell = new Audio('https://cdn.pixabay.com/audio/2022/03/24/audio_730604c55a.mp3');
+        
         const circle = document.getElementById('mainCircle');
         const timerDisp = document.getElementById('timer');
         const phaseDisp = document.getElementById('phaseText');
         const statusDisp = document.getElementById('status');
         const btn = document.getElementById('startBtn');
-        const bell = new Audio('https://cdn.pixabay.com/audio/2022/03/24/audio_730604c55a.mp3'); // Deep Singing Bowl
+
+        // This function "Unlocks" the audio for the browser
+        function initAndStart() {
+            bell.play().then(() => {
+                // If it plays, we pause it immediately and start the logic
+                bell.pause();
+                bell.currentTime = 0;
+                startProtocol();
+            }).catch(error => {
+                console.log("Audio unlock failed:", error);
+                startProtocol(); // Still start the visual even if audio fails
+            });
+        }
 
         async function startProtocol() {
             btn.style.display = 'none';
-            statusDisp.innerText = "Close your eyes and listen...";
+            statusDisp.innerText = "Listening...";
             
-            // Initial Bell
+            // Initial Chime
             bell.play();
 
+            // 3-second settle
             for(let i=3; i>0; i--) {
                 timerDisp.innerText = i;
                 await new Promise(r => setTimeout(r, 1000));
             }
 
+            // 4-4-6 Cycle
             await breathePhase("INHALE", 4, "inhale");
             await breathePhase("HOLD", 4, "hold");
             await breathePhase("EXHALE", 6, "exhale");
 
-            // Closing Bell
+            // Final Chime
             bell.play();
 
             timerDisp.innerText = "DONE";
             phaseDisp.innerText = "REST";
-            statusDisp.innerText = "Peace in the Afternoon of Life.";
+            statusDisp.innerText = "The Slight Edge is found in the stillness.";
             btn.style.display = 'block';
             btn.innerText = "ANOTHER ROUND";
         }
