@@ -3,57 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE WELL | Stephen's Sanctuary</title>
+    <title>THE WELL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .teal-circle { height: 200px; width: 200px; border: 4px solid #14b8a6; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 1s ease; }
-        .breathing { animation: breathe 8s infinite ease-in-out; }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
+        .teal-circle { 
+            height: 200px; width: 200px; 
+            border: 4px solid #14b8a6; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        @keyframes breathe {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+        .animating { animation: breathe 6s infinite ease-in-out; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-6">
-    <header class="text-center mb-12">
-        <h1 class="text-4xl font-light tracking-widest text-teal-500 uppercase">The Well</h1>
-        <p class="text-slate-400 mt-2 italic">A Space for the Afternoon of Life</p>
-    </header>
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <h1 class="text-3xl tracking-widest text-teal-500 uppercase mb-8">The Well</h1>
+    
+    <div id="circle" class="teal-circle mb-10">
+        <span id="display" class="text-4xl font-mono">45</span>
+    </div>
 
-    <main class="flex flex-col items-center space-y-12">
-        <div id="circle-container" class="teal-circle">
-            <span id="timer-text" class="text-2xl font-mono">45</span>
-        </div>
-        
-        <button onclick="startAnchor()" id="action-btn" class="px-8 py-3 bg-teal-600 hover:bg-teal-500 rounded-full transition-all tracking-wide">
-            Begin 45s Pause
-        </button>
-    </main>
-
-    <footer class="mt-20 text-slate-500 text-sm">
-        <p>"The Slight Edge is found in the stillness."</p>
-    </footer>
+    <button onclick="start()" id="btn" class="bg-teal-600 px-10 py-3 rounded-full hover:bg-teal-500 transition-all">
+        Begin Anchor
+    </button>
 
     <script>
-        let timeLeft = 45;
-        let timerId = null;
+        let count = 45;
+        let running = false;
 
-        function startAnchor() {
-            const btn = document.getElementById('action-btn');
-            const circle = document.getElementById('circle-container');
-            const timerText = document.getElementById('timer-text');
+        function start() {
+            if (running) return;
+            running = true;
+            document.getElementById('btn').style.opacity = '0.3';
+            document.getElementById('circle').classList.add('animating');
             
-            btn.style.display = 'none';
-            circle.classList.add('breathing');
-            
-            timerId = setInterval(() => {
-                timeLeft--;
-                timerText.innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerId);
-                    circle.classList.remove('breathing');
-                    timerText.innerText = "Done";
-                    btn.innerText = "Reset Sanctuary";
-                    btn.style.display = 'block';
-                    timeLeft = 45;
+            const timer = setInterval(() => {
+                count--;
+                document.getElementById('display').innerText = count;
+                
+                if (count <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('circle').classList.remove('animating');
+                    document.getElementById('display').innerText = "Rest";
+                    document.getElementById('btn').style.opacity = '1';
+                    count = 45;
+                    running = false;
                 }
             }, 1000);
         }
